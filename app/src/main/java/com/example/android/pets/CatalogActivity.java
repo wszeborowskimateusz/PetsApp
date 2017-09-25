@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +35,9 @@ import com.example.android.pets.data.PetDbHelper;
  */
 public class CatalogActivity extends AppCompatActivity {
 
+    /** Database helper that will provide us access to the database */
+     private PetDbHelper mDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +52,8 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //displayDatabaseInfo();
-        PetDbHelper mDbHelper = new PetDbHelper(this);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        displayDatabaseInfo();
+        mDbHelper = new PetDbHelper(this);
     }
 
     private void displayDatabaseInfo() {
@@ -90,7 +93,7 @@ public class CatalogActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                // Do nothing for now
+                insertPet();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
@@ -98,5 +101,22 @@ public class CatalogActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void insertPet() {
+
+        // Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(PetEntry.COLUMN_PET_NAME,"Toto");
+        values.put(PetEntry.COLUMN_PET_BREED,"Terrier");
+        values.put(PetEntry.COLUMN_PET_GENDER,PetEntry.GENDER_MALE);
+        values.put(PetEntry.COLUMN_PET_WEIGHT,7);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        if(newRowId!=-1) displayDatabaseInfo();
     }
 }
