@@ -48,7 +48,9 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        displayDatabaseInfo();
+        //displayDatabaseInfo();
+        PetDbHelper mDbHelper = new PetDbHelper(this);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
     }
 
     private void displayDatabaseInfo() {
