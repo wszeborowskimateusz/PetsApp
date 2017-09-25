@@ -15,6 +15,8 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +28,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
+import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -105,6 +109,29 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
+    //Get users input from editor and save it into the db
+    private void insertPet(){
+        String petName = mNameEditText.getText().toString().trim();
+        String petBreed = mBreedEditText.getText().toString().trim();
+        int petWeight = Integer.parseInt(mWeightEditText.getText().toString().trim());
+
+        PetDbHelper mDbHelper = new PetDbHelper(this);
+        // Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(PetEntry.COLUMN_PET_NAME,petName);
+        values.put(PetEntry.COLUMN_PET_BREED,petBreed);
+        values.put(PetEntry.COLUMN_PET_GENDER,mGender);
+        values.put(PetEntry.COLUMN_PET_WEIGHT,petWeight);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        if(newRowId!=-1) Toast.makeText(this, "Pet saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+        else  Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -119,7 +146,10 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
+                // Save pet to db
+                insertPet();
+                //Exit activity
+                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -133,4 +163,6 @@ public class EditorActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
