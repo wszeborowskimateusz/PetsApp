@@ -18,7 +18,6 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -105,7 +104,7 @@ public class CatalogActivity extends AppCompatActivity {
 
                 // Display the values from each column of the current row in the cursor in the TextView
                 displayView.append(("\n" + currentID + " - " +
-                        currentName + currentBreed + " - " + currentGender + " - " +
+                        currentName + " - " + currentBreed + " - " + currentGender + " - " +
                         currentWeight));
             }
         } finally {
@@ -117,9 +116,6 @@ public class CatalogActivity extends AppCompatActivity {
 
     private void insertPet() {
 
-        // Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(PetEntry.COLUMN_PET_NAME,"Toto");
@@ -127,9 +123,7 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_GENDER,PetEntry.GENDER_MALE);
         values.put(PetEntry.COLUMN_PET_WEIGHT,7);
 
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
-        if(newRowId!=-1) displayDatabaseInfo();
+        getContentResolver().insert(PetEntry.CONTENT_URI,values);
     }
 
     @Override
@@ -147,6 +141,7 @@ public class CatalogActivity extends AppCompatActivity {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertPet();
+                displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
