@@ -1,5 +1,6 @@
 package com.example.android.pets.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,10 +9,24 @@ import android.provider.BaseColumns;
 
 public final class PetContract {
 
+    /*The content authority to form proper URI*/
+    public static final String CONTENT_AUTHORITY = "com.example.android.pets";
+
+    /*The base URI to talk to the ContentProvider*/
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    /*This constants stores the path for each of the tables which will be appended to the base content URI.*/
+    public static final String PATH_PETS = "pets";
+
+
+
     private PetContract(){}
 
     /* Inner class that defines the table contents */
     public static class PetEntry implements BaseColumns {
+
+        //The content URI to access the pet data in the provider
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PETS);
 
         //The name of the table
         public static final String TABLE_NAME = "pets";
