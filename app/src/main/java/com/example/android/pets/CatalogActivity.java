@@ -57,12 +57,6 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void displayDatabaseInfo() {
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String projections[]={
                 PetEntry._ID,
@@ -72,7 +66,7 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_WEIGHT
         };
 
-        Cursor cursor = db.query(PetEntry.TABLE_NAME,projections,null,null,null,null,null);
+        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI,projections,null,null,null);
 
         //Find the textView to add info about pets
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
