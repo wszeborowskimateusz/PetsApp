@@ -27,15 +27,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 /**
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
 
-    /** Database helper that will provide us access to the database */
-     private PetDbHelper mDbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,6 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
         displayDatabaseInfo();
-        mDbHelper = new PetDbHelper(this);
     }
 
     private void displayDatabaseInfo() {
