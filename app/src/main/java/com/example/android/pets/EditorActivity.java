@@ -104,6 +104,7 @@ public class EditorActivity extends AppCompatActivity
         //If we add new pet
         if(mCurentPetUri == null){
             setTitle(getString(R.string.add_pet));
+            invalidateOptionsMenu();
         }
         //If we edit a pet
         else{
@@ -246,6 +247,17 @@ public class EditorActivity extends AppCompatActivity
 
         // Show dialog that there are unsaved changes
         showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (mCurentPetUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
+        return true;
     }
 
     @Override
