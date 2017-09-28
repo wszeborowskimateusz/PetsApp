@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,7 +137,17 @@ public class EditorActivity extends AppCompatActivity
 
         String petName = mNameEditText.getText().toString().trim();
         String petBreed = mBreedEditText.getText().toString().trim();
-        int petWeight = Integer.parseInt(mWeightEditText.getText().toString().trim());
+
+        Log.v("EditorActivity","Name = "+ petName);
+        Log.v("EditorActivity","Breed = "+ petBreed);
+        Log.v("EditorActivity","Weight = "+ mWeightEditText.getText().toString().trim());
+        if (mCurentPetUri == null &&
+                TextUtils.isEmpty(petName) && TextUtils.isEmpty(petBreed) &&
+                TextUtils.isEmpty(mWeightEditText.getText().toString().trim()) && mGender == PetEntry.GENDER_UNKNOWN) {return;}
+
+        int petWeight = 0;
+        if(TextUtils.isEmpty(mWeightEditText.getText().toString().trim()))
+            petWeight = Integer.parseInt(mWeightEditText.getText().toString().trim());
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
