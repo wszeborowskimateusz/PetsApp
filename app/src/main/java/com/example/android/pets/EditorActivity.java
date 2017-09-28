@@ -261,13 +261,13 @@ public class EditorActivity extends AppCompatActivity
             if(rows > 0){
                 Toast.makeText(this, getString(R.string.editor_delete_pet_successful),
                         Toast.LENGTH_SHORT).show();
-                finish();
             }
             else{
                 Toast.makeText(this, getString(R.string.editor_delete_pet_failed),
                         Toast.LENGTH_SHORT).show();
             }
         }
+        finish();
     }
 
     @Override

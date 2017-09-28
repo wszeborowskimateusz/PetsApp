@@ -136,7 +136,7 @@ public class PetProvider extends ContentProvider {
         // Check that the breed is not null
         String breed = values.getAsString(PetEntry.COLUMN_PET_BREED);
         if (breed == null) {
-            throw new IllegalArgumentException("Pet requires a breed");
+            breed = "";
         }
 
         Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
@@ -212,7 +212,7 @@ public class PetProvider extends ContentProvider {
         if(values.containsKey(PetEntry.COLUMN_PET_BREED)) {
             String breed = values.getAsString(PetEntry.COLUMN_PET_BREED);
             if (breed == null) {
-                throw new IllegalArgumentException("Pet requires a breed");
+                breed = "";
             }
         }
 
