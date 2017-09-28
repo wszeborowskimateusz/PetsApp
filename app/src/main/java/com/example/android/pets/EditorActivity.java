@@ -26,6 +26,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -164,7 +165,7 @@ public class EditorActivity extends AppCompatActivity
                 TextUtils.isEmpty(mWeightEditText.getText().toString().trim()) && mGender == PetEntry.GENDER_UNKNOWN) {return;}
 
         int petWeight = 0;
-        if(TextUtils.isEmpty(mWeightEditText.getText().toString().trim()))
+        if(!TextUtils.isEmpty(mWeightEditText.getText().toString().trim()))
             petWeight = Integer.parseInt(mWeightEditText.getText().toString().trim());
 
         // Create a new map of values, where column names are the keys
@@ -176,6 +177,7 @@ public class EditorActivity extends AppCompatActivity
         //Adding mode
         if(mCurentPetUri == null) {
 
+            Log.v("EditorActivity", "URI = "+mCurentPetUri);
             Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
             // Show a toast message depending on whether or not the insertion was successful
             if (newUri == null) {
