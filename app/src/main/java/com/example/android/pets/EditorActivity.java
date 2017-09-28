@@ -17,6 +17,8 @@ package com.example.android.pets;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -36,7 +38,8 @@ import com.example.android.pets.data.PetContract.PetEntry;
 /**
  * Allows user to create a new pet or edit an existing one.
  */
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity
+        implements  android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     /** EditText field to enter the pet's name */
     private EditText mNameEditText;
@@ -56,6 +59,12 @@ public class EditorActivity extends AppCompatActivity {
      */
     private int mGender = 0;
 
+    //Unique ID for our PetLoader
+    private static final int EXISTING_PET_LOADER = 0;
+
+    //Uri from the Intent
+    private Uri mCurentPetUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,15 +79,17 @@ public class EditorActivity extends AppCompatActivity {
         setupSpinner();
 
         Intent intent = getIntent();
-        Uri uri = intent.getData();
+        mCurentPetUri = intent.getData();
         //If we add new pet
-        if(uri == null){
+        if(mCurentPetUri == null){
             setTitle(getString(R.string.add_pet));
         }
         //If we edit a pet
         else{
             setTitle(getString(R.string.edit_pet));
         }
+
+        getLoaderManager().initLoader(EXISTING_PET_LOADER, null, this);
     }
 
     /**
@@ -179,4 +190,37 @@ public class EditorActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String projections[]={
+                PetEntry._ID,
+                PetEntry.COLUMN_PET_NAME,
+                PetEntry.COLUMN_PET_BREED,
+                PetEntry.COLUMN_PET_GENDER,
+                PetEntry.COLUMN_PET_WEIGHT
+        };
+        if(mCurentPetUri != null)return new android.content.CursorLoader(this,mCurentPetUri,projections,"id=",null,null);
+        else return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if(cursor.moveToFirst()) {
+            //Set the proper information based on db
+            mNameEditText.setText(cursor.getString(cursor.getColumnIndexOrThrow(PetEntry.COLUMN_PET_NAME)));
+            mBreedEditText.setText(cursor.getString(cursor.getColumnIndexOrThrow(PetEntry.COLUMN_PET_BREED)));
+            mWeightEditText.setText(String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(PetEntry.COLUMN_PET_WEIGHT))));
+            mGenderSpinner.setSelection(cursor.getInt(cursor.getColumnIndexOrThrow(PetEntry.COLUMN_PET_GENDER)));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        //clear input fields
+        mNameEditText.setText("");
+        mBreedEditText.setText("");
+        mWeightEditText.setText("");
+        mGenderSpinner.setSelection(PetEntry.GENDER_UNKNOWN);
+    }
 }
