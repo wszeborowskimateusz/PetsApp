@@ -64,4 +64,6 @@
     <string name="empty_view_subtitle_text">Get started by adding a pet</string>
     <string name="add_pet">Add a pet</string>
     <string name="edit_pet">Edit a pet</string>
+    <string name="editor_update_pet_successful">Pet successfuly updated</string>
+    <string name="editor_update_pet_failed">Fail while updating a pet</string>
 </resources>

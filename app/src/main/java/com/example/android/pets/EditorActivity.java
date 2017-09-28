@@ -132,29 +132,46 @@ public class EditorActivity extends AppCompatActivity
     }
 
     //Get users input from editor and save it into the db
-    private void insertPet(){
+    private void savePet(){
+
         String petName = mNameEditText.getText().toString().trim();
         String petBreed = mBreedEditText.getText().toString().trim();
         int petWeight = Integer.parseInt(mWeightEditText.getText().toString().trim());
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(PetEntry.COLUMN_PET_NAME,petName);
-        values.put(PetEntry.COLUMN_PET_BREED,petBreed);
-        values.put(PetEntry.COLUMN_PET_GENDER,mGender);
-        values.put(PetEntry.COLUMN_PET_WEIGHT,petWeight);
+        values.put(PetEntry.COLUMN_PET_NAME, petName);
+        values.put(PetEntry.COLUMN_PET_BREED, petBreed);
+        values.put(PetEntry.COLUMN_PET_GENDER, mGender);
+        values.put(PetEntry.COLUMN_PET_WEIGHT, petWeight);
+        //Adding mode
+        if(mCurentPetUri == null) {
 
-        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI,values);
-        // Show a toast message depending on whether or not the insertion was successful
-        if (newUri == null) {
-            // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.editor_insert_pet_failed),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            // Otherwise, the insertion was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.editor_insert_pet_successful),
-                    Toast.LENGTH_SHORT).show();
+            Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+            // Show a toast message depending on whether or not the insertion was successful
+            if (newUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_insert_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_insert_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
+        //Editing mode
+        else{
+            int rows = getContentResolver().update(mCurentPetUri,values,null,null);
+            if(rows > 0){
+                Toast.makeText(this, getString(R.string.editor_update_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, getString(R.string.editor_update_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
     @Override
@@ -172,7 +189,7 @@ public class EditorActivity extends AppCompatActivity
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save pet to db
-                insertPet();
+                savePet();
                 //Exit activity
                 finish();
                 return true;
